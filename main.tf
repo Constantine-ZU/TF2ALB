@@ -108,14 +108,14 @@ resource "aws_security_group" "sg_80_433" {
   }
 }
 
-resource "aws_instance" "Instance_10_5" {
+resource "aws_instance" "Instance_10_7" {
   ami                     = "ami-0705384c0b33c194c"
   instance_type           = "t3.micro"
   key_name                = "pair-key"
   subnet_id               = aws_subnet.subnet_10_0.id
   vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
   associate_public_ip_address = true
-  private_ip              = "10.10.10.5"
+  private_ip              = "10.10.10.7"
   iam_instance_profile = "IAM_CERT_ROLE"  # access to s3 Constantine-z-2
 
   connection {
@@ -135,7 +135,37 @@ provisioner "remote-exec" {
 
 
   tags = {
-    Name = "Ubuntu-Blazor-10-5"
+    Name = "Ubuntu-ALB-10-7"
   }
 }
 
+resource "aws_instance" "Instance_10_6" {
+  ami                     = "ami-0705384c0b33c194c"
+  instance_type           = "t3.micro"
+  key_name                = "pair-key"
+  subnet_id               = aws_subnet.subnet_10_0.id
+  vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
+  associate_public_ip_address = true
+  private_ip              = "10.10.10.6"
+  iam_instance_profile = "IAM_CERT_ROLE"  # access to s3 Constantine-z-2
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("${path.module}/pair-key.pem")
+    host        = self.public_ip
+  }
+
+provisioner "remote-exec" {
+  inline = [
+    "sudo apt-get update",
+    "sudo snap install aws-cli --classic" 
+   
+  ]
+}
+
+
+  tags = {
+    Name = "Ubuntu-ALB-10-6"
+  }
+}
