@@ -13,15 +13,6 @@ variable "test" {
   default = "this is a test"
 }
 
-variable "godaddy_key" {
-  type        = string
-  description = "GoDaddy API Key"
-}
-
-variable "godaddy_secret_key" {
-  type        = string
-  description = "GoDaddy API Secret Key"
-}
 
 variable "godaddy_domain" {
   type        = string
@@ -38,4 +29,5 @@ variable "godaddy_record_name" {
 variable "hetzner_dns_key" {
   type        = string
   description = "Hetzner API Secret Key"
+   default = "0000"
 }
