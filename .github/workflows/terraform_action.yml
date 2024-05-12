@@ -1,0 +1,75 @@
+name: Terraform Chouse Action ALB
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        type: choice
+        description: terraform command
+        default: plan
+        options:
+          - plan
+          - apply
+          - destroy
+env:
+
+  AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+  TF_VAR_hetzner_dns_key: ${{ secrets.TF_VAR_HETZNER_DNS_KEY}}
+  command:    ${{ github.event.inputs.command }}
+
+ 
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Terraform Setup
+      uses: hashicorp/setup-terraform@v2.0.2
+
+
+    - name: Retrieve SSH Key from S3
+      run: |
+        echo "Retrieving SSH Key from S3 bucket..."
+        aws s3 cp s3://constantine-z/pair-key.pem pair-key.pem --region eu-north-1  #--debug
+        echo "SSH Key retrieved successfully."
+
+    - name: Terraform Init
+      run: |
+        echo "INFO: started by ${{ github.actor }}"
+        echo "INFO: start $(date -u)"
+        terraform init
+
+    - name: Terraform Run
+      run: |
+        echo "INFO: started by ${actor}"
+        echo "INFO: start $(date -u)"
+        echo "RUN: terraform init"
+        terraform init
+
+        # echo "RUN: terraform fmt -check"
+        # terraform fmt -check
+
+        # echo "RUN: terraform validate"
+        # terraform validate
+        
+        [[ "$command" == "plan" ]] && \
+        echo "RUN: terraform plan" && \
+        terraform plan
+    
+        [[ "$command" == "destroy" ]] && \
+        echo "RUN: terraform destroy " && \
+        terraform destroy -auto-approve
+
+        [[ "$command" == "apply" ]] && \
+        echo "RUN: terraform apply -input=false" && \
+        terraform apply -input=false -auto-approve
+
+    # - name: terraform ${{ github.event.inputs.command }}
+    #   run: terraform destroy -auto-approve
+    #   env:
+    #     AWS_ACCESS_KEY_ID: ${{ secrets.TF_VAR_ACCESS_KEY }}
+    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.TF_VAR_SECRET_KEY }}
+
