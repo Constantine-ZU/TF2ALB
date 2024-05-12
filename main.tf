@@ -112,7 +112,7 @@ resource "aws_instance" "Instance_10_5" {
   ami                     = "ami-0705384c0b33c194c"
   instance_type           = "t3.micro"
   key_name                = "pair-key"
-  subnet_id               = aws_subnet.default.id
+  subnet_id               = aws_subnet.subnet_10_0.id
   vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
   associate_public_ip_address = true
   private_ip              = "10.10.10.5"
