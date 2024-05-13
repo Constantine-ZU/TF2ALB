@@ -3,7 +3,7 @@ resource "aws_lb" "app_lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sg_80_433.id]
-  subnets            = [aws_subnet.subnet_10_0.id, aws_subnet.subnet_10_1.id]
+  subnets            = [aws_subnet.subnet_10_0.id, aws_subnet.subnet_20_0.id]
 
   enable_deletion_protection = false
 }
@@ -50,15 +50,16 @@ resource "aws_lb_target_group_attachment" "tg_attachment_10_7" {
 }
 
 
-data "aws_s3_bucket_object" "private_key_data" {
+data "aws_s3_object" "private_key_data" {
   bucket = "constantine-z-2"
   key    = "webaws_pam4_com_2024_05_13.key"
 }
 
-data "aws_s3_bucket_object" "certificate_data" {
+data "aws_s3_object" "certificate_data" {
   bucket = "constantine-z-2"
   key    = "webaws_pam4_com_2024_05_13.pfx"
 }
+
 
 resource "aws_acm_certificate" "cert" {
   private_key       = data.aws_s3_bucket_object.private_key_data.body
