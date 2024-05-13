@@ -135,6 +135,7 @@ resource "aws_instance" "Instance_20_7" {
   vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
   associate_public_ip_address = true
   private_ip              = "10.10.20.7"
+  iam_instance_profile = "IAM_CERT_ROLE"  
 
   connection {
     type        = "ssh"
@@ -145,12 +146,34 @@ resource "aws_instance" "Instance_20_7" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update",
-      "sudo snap install aws-cli --classic"
+    "sudo apt-get update",
+    "sudo snap install aws-cli --classic",  
+    "aws s3 cp s3://constantine-z-2/20240808_43c3e236.pfx ./20240808_43c3e236.pfx",  
+    "sudo mv ./20240808_43c3e236.pfx /etc/ssl/certs/20240808_43c3e236.pfx", 
+    "sudo chmod 600 /etc/ssl/certs/20240808_43c3e236.pfx",  
+    "sudo mkdir -p /var/www/BlazorForTF",
+    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
+    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
+    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
+    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+    "sudo systemctl daemon-reload",
+    "sudo systemctl enable blazorfortf",
+    "sudo systemctl start blazorfortf"
     ]
   }
 
-  tags = {
+ provisioner "local-exec" {
+    command = "python3 update_hetzner.py"
+    environment = {
+      HETZNER_DNS_KEY    = var.hetzner_dns_key
+      NEW_IP             = self.public_ip
+      HETZNER_RECORD_NAME = "webaws7.pam4.com"
+      HETZNER_DOMAIN_NAME = "pam4.com"
+    }
+ }
+
+ tags = {
     Name = "Ubuntu-ALB-10-7"
   }
 }
@@ -163,6 +186,7 @@ resource "aws_instance" "Instance_10_6" {
   vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
   associate_public_ip_address = true
   private_ip              = "10.10.10.6"
+  iam_instance_profile = "IAM_CERT_ROLE"  
 
   connection {
     type        = "ssh"
@@ -173,9 +197,30 @@ resource "aws_instance" "Instance_10_6" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update",
-      "sudo snap install aws-cli --classic"
+    "sudo apt-get update",
+    "sudo snap install aws-cli --classic",  
+    "aws s3 cp s3://constantine-z-2/20240808_43c3e236.pfx ./20240808_43c3e236.pfx",  
+    "sudo mv ./20240808_43c3e236.pfx /etc/ssl/certs/20240808_43c3e236.pfx", 
+    "sudo chmod 600 /etc/ssl/certs/20240808_43c3e236.pfx",  
+    "sudo mkdir -p /var/www/BlazorForTF",
+    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
+    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
+    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
+    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+    "sudo systemctl daemon-reload",
+    "sudo systemctl enable blazorfortf",
+    "sudo systemctl start blazorfortf"
     ]
+  }
+   provisioner "local-exec" {
+    command = "python3 update_hetzner.py"
+    environment = {
+      HETZNER_DNS_KEY    = var.hetzner_dns_key
+      NEW_IP             = self.public_ip
+      HETZNER_RECORD_NAME = "webaws6.pam4.com"
+      HETZNER_DOMAIN_NAME = "pam4.com"
+    }
   }
 
   tags = {

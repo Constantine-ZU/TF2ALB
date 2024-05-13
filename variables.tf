@@ -8,12 +8,6 @@ variable "secret_key" {
   default = ""
 }
 
-variable "test" {
-  description = "Test var"
-  default = "this is a test"
-}
-
-
 variable "godaddy_domain" {
   type        = string
   description = "The domain name in GoDaddy where the A record will be updated"
