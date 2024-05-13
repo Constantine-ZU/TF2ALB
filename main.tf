@@ -168,7 +168,7 @@ resource "aws_instance" "Instance_20_7" {
     environment = {
       HETZNER_DNS_KEY    = var.hetzner_dns_key
       NEW_IP             = self.public_ip
-      HETZNER_RECORD_NAME = "webaws7.pam4.com"
+      HETZNER_RECORD_NAME = "webaws7"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
  }
@@ -218,7 +218,7 @@ resource "aws_instance" "Instance_10_6" {
     environment = {
       HETZNER_DNS_KEY    = var.hetzner_dns_key
       NEW_IP             = self.public_ip
-      HETZNER_RECORD_NAME = "webaws6.pam4.com"
+      HETZNER_RECORD_NAME = "webaws6"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }

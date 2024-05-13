@@ -12,7 +12,7 @@ provisioner "local-exec" {
     environment = {
       HETZNER_DNS_KEY   = var.hetzner_dns_key
       NEW_IP            = self.dns_name
-      HETZNER_RECORD_NAME = "webaws.pam4.com"
+      HETZNER_RECORD_NAME = "webaws"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }

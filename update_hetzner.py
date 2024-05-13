@@ -1,7 +1,7 @@
 import requests
 import os
 
-# Получение переменных окружения
+
 api_token = os.getenv("HETZNER_DNS_KEY")
 new_ip = os.getenv("NEW_IP")
 record_name = os.getenv("HETZNER_RECORD_NAME")
@@ -12,7 +12,7 @@ print(f"Record Name: {record_name}")
 print(f"Domain Name: {domain_name}")
 print(f"API Key (first 5 chars): {api_token[:5]}...")
 
-# Заголовки для API запросов
+
 headers = {
     "Content-Type": "application/json",
     "Auth-API-Token": api_token
