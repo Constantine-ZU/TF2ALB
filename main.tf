@@ -108,15 +108,30 @@ resource "aws_security_group" "sg_80_433" {
   }
 }
 
-resource "aws_instance" "Instance_10_7" {
+resource "aws_subnet" "subnet_20_0" {
+  vpc_id            = aws_vpc.vpc_0_0.id
+  cidr_block        = "10.10.20.0/24"
+  availability_zone = "eu-north-1b"  # Дополнительный субнет в другой зоне
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "additionalSubnet"
+  }
+}
+
+resource "aws_route_table_association" "default_subnet_20_0" {
+  subnet_id      = aws_subnet.subnet_20_0.id
+  route_table_id = aws_route_table.default.id
+}
+
+resource "aws_instance" "Instance_20_7" {
   ami                     = "ami-0705384c0b33c194c"
   instance_type           = "t3.micro"
   key_name                = "pair-key"
-  subnet_id               = aws_subnet.subnet_10_0.id
+  subnet_id               = aws_subnet.subnet_20_0.id  
   vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
   associate_public_ip_address = true
-  private_ip              = "10.10.10.7"
-  iam_instance_profile = "IAM_CERT_ROLE"  # access to s3 Constantine-z-2
+  private_ip              = "10.10.20.7"
 
   connection {
     type        = "ssh"
@@ -125,14 +140,12 @@ resource "aws_instance" "Instance_10_7" {
     host        = self.public_ip
   }
 
-provisioner "remote-exec" {
-  inline = [
-    "sudo apt-get update",
-    "sudo snap install aws-cli --classic" 
-   
-  ]
-}
-
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo snap install aws-cli --classic"
+    ]
+  }
 
   tags = {
     Name = "Ubuntu-ALB-10-7"
@@ -143,11 +156,10 @@ resource "aws_instance" "Instance_10_6" {
   ami                     = "ami-0705384c0b33c194c"
   instance_type           = "t3.micro"
   key_name                = "pair-key"
-  subnet_id               = aws_subnet.subnet_10_0.id
+  subnet_id               = aws_subnet.subnet_10_0.id 
   vpc_security_group_ids  = [aws_security_group.sg_80_433.id]
   associate_public_ip_address = true
   private_ip              = "10.10.10.6"
-  iam_instance_profile = "IAM_CERT_ROLE"  # access to s3 Constantine-z-2
 
   connection {
     type        = "ssh"
@@ -156,14 +168,12 @@ resource "aws_instance" "Instance_10_6" {
     host        = self.public_ip
   }
 
-provisioner "remote-exec" {
-  inline = [
-    "sudo apt-get update",
-    "sudo snap install aws-cli --classic" 
-   
-  ]
-}
-
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo snap install aws-cli --classic"
+    ]
+  }
 
   tags = {
     Name = "Ubuntu-ALB-10-6"
