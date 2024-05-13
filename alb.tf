@@ -49,33 +49,22 @@ resource "aws_lb_target_group_attachment" "tg_attachment_10_7" {
   port             = 80
 }
 
-resource "aws_subnet" "subnet_10_1" {
-  vpc_id                  = aws_vpc.vpc_0_0.id
-  cidr_block              = "10.10.20.0/24"
-  availability_zone       = "eu-north-1b"
-  map_public_ip_on_launch = true
 
-  tags = {
-    Name = "additionalSubnet"
-  }
+data "aws_s3_bucket_object" "private_key_data" {
+  bucket = "constantine-z-2"
+  key    = "webaws_pam4_com_2024_05_13.key"
 }
 
-resource "aws_acm_certificate" "cert" {
-  private_key       = aws_s3_object.private_key_object.body
-  certificate_body  = aws_s3_object.certificate_object.body
-  certificate_chain = aws_s3_object.certificate_chain_object.body # Используйте этот параметр, если есть цепочка сертификатов
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_s3_object" "certificate_object" {
+data "aws_s3_bucket_object" "certificate_data" {
   bucket = "constantine-z-2"
   key    = "webaws_pam4_com_2024_05_13.pfx"
 }
 
-resource "aws_s3_object" "private_key_object" {
-  bucket = "constantine-z-2"
-  key    = "webaws_pam4_com_2024_05_13.key"
+resource "aws_acm_certificate" "cert" {
+  private_key       = data.aws_s3_bucket_object.private_key_data.body
+  certificate_body  = data.aws_s3_bucket_object.certificate_data.body
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
