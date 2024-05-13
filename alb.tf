@@ -62,8 +62,8 @@ data "aws_s3_object" "certificate_data" {
 
 
 resource "aws_acm_certificate" "cert" {
-  private_key       = data.aws_s3_bucket_object.private_key_data.body
-  certificate_body  = data.aws_s3_bucket_object.certificate_data.body
+  private_key       = data.aws_s3_object.private_key_data.body
+  certificate_body  = data.aws_s3_object.certificate_data.body
 
   lifecycle {
     create_before_destroy = true
