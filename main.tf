@@ -39,10 +39,22 @@ resource "aws_vpc" "vpc_0_0" {
 resource "aws_subnet" "subnet_10_0" {
   vpc_id            = aws_vpc.vpc_0_0.id
   cidr_block        = "10.10.10.0/24"
+    availability_zone = "eu-north-1a" 
   map_public_ip_on_launch = true
 
   tags = {
     Name = "defaultSubnet"
+  }
+}
+
+resource "aws_subnet" "subnet_20_0" {
+  vpc_id            = aws_vpc.vpc_0_0.id
+  cidr_block        = "10.10.20.0/24"
+  availability_zone = "eu-north-1b"  
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "additionalSubnet"
   }
 }
 
@@ -108,16 +120,7 @@ resource "aws_security_group" "sg_80_433" {
   }
 }
 
-resource "aws_subnet" "subnet_20_0" {
-  vpc_id            = aws_vpc.vpc_0_0.id
-  cidr_block        = "10.10.20.0/24"
-  availability_zone = "eu-north-1b"  # Дополнительный субнет в другой зоне
-  map_public_ip_on_launch = true
 
-  tags = {
-    Name = "additionalSubnet"
-  }
-}
 
 resource "aws_route_table_association" "default_subnet_20_0" {
   subnet_id      = aws_subnet.subnet_20_0.id
