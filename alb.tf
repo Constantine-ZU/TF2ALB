@@ -45,7 +45,7 @@ resource "aws_lb_target_group_attachment" "tg_attachment_10_6" {
 
 resource "aws_lb_target_group_attachment" "tg_attachment_10_7" {
   target_group_arn = aws_lb_target_group.app_tg.arn
-  target_id        = aws_instance.Instance_10_7.id
+  target_id        = aws_instance.Instance_20_7.id
   port             = 80
 }
 
