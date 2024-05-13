@@ -8,18 +8,7 @@ resource "aws_lb" "app_lb" {
   enable_deletion_protection = false
 }
 
-resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.app_lb.arn
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.cert.arn
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app_tg.arn
-  }
-}
 
 resource "aws_lb_target_group" "app_tg" {
   name     = "app-target-group"
@@ -50,18 +39,16 @@ resource "aws_lb_target_group_attachment" "tg_attachment_10_7" {
 }
 
 
-data "aws_s3_object" "private_key_data" {
-  bucket = "constantine-z-2"
-  key    = "webaws_pam4_com_2024_05_13.key"
-}
 
-data "aws_s3_object" "certificate_data" {
-  bucket = "constantine-z-2"
-  key    = "webaws_pam4_com_2024_05_13.pfx"
-}
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:eu-north-1:637423446150:certificate/f02aeb60-3ec1-4c7c-866e-41c27c34ce90"
 
-resource "aws_acm_certificate_import" "cert" {
-  certificate      = data.aws_s3_object.certificate_data.body
-  private_key      = data.aws_s3_object.private_key_data.body
-  certificate_chain = null 
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
 }
