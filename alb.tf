@@ -11,7 +11,7 @@ provisioner "local-exec" {
     command = "python3 update_hetzner.py"
     environment = {
       HETZNER_DNS_KEY   = var.hetzner_dns_key
-      NEW_IP            = self.dns_name
+      HETZNER_C_NAME    = self.dns_name
       HETZNER_RECORD_NAME = "webaws"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }

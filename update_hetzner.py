@@ -1,17 +1,16 @@
 import requests
 import os
 
-
 api_token = os.getenv("HETZNER_DNS_KEY")
-new_ip = os.getenv("NEW_IP")
+new_ip_or_cname = os.getenv("NEW_IP")
+c_name = os.getenv("HETZNER_C_NAME")
 record_name = os.getenv("HETZNER_RECORD_NAME")
 domain_name = os.getenv("HETZNER_DOMAIN_NAME")
 
-print(f"New IP: {new_ip}")
+print(f"New IP or CNAME: {new_ip_or_cname}")
 print(f"Record Name: {record_name}")
 print(f"Domain Name: {domain_name}")
 print(f"API Key (first 5 chars): {api_token[:5]}...")
-
 
 headers = {
     "Content-Type": "application/json",
@@ -30,13 +29,13 @@ def get_zone_id(domain_name):
     return None
 
 # Получение Record ID
-def get_record_id(zone_id, record_name):
+def get_record_id(zone_id, record_name, record_type):
     url = f"https://dns.hetzner.com/api/v1/records?zone_id={zone_id}"
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         records = response.json()['records']
         for record in records:
-            if record['name'] == record_name and record['type'] == 'A':
+            if record['name'] == record_name and record['type'] == record_type:
                 return record['id']
     return None
 
@@ -44,24 +43,28 @@ def get_record_id(zone_id, record_name):
 zone_id = get_zone_id(domain_name)
 if zone_id:
     print(f"Zone ID: {zone_id}")
-    record_id = get_record_id(zone_id, record_name)
+    # Определяем тип записи в зависимости от наличия переменной c_name
+    record_type = "CNAME" if c_name else "A"
+    record_value = c_name if c_name else new_ip_or_cname
+    record_id = get_record_id(zone_id, record_name, record_type)
+
     if record_id:
         print(f"Record ID: {record_id}")
-        # Обновление A-записи
+        # Обновление записи
         url = f"https://dns.hetzner.com/api/v1/records/{record_id}"
         data = {
-            "value": new_ip,
+            "value": record_value,
             "ttl": 60,
-            "type": "A",
+            "type": record_type,
             "name": record_name,
             "zone_id": zone_id
         }
         response = requests.put(url, headers=headers, json=data)
         if response.status_code == 200:
-            print(f"Successfully updated A record {record_name} to {new_ip}")
+            print(f"Successfully updated {record_type} record {record_name} to {record_value}")
         else:
-            print(f"Failed to update A record: {response.status_code}, {response.text}")
+            print(f"Failed to update {record_type} record: {response.status_code}, {response.text}")
     else:
-        print(f"No record ID found for {record_name}.")
+        print(f"No record ID found for {record_name} with type {record_type}.")
 else:
     print(f"No zone ID found for {domain_name}.")
