@@ -1,4 +1,4 @@
-resource "aws_lb" "app_lb" {
+resource "aws_lb" "app_lb_webaws_pam4" {
   name               = "my-app-lb"
   internal           = false
   load_balancer_type = "application"
@@ -6,6 +6,17 @@ resource "aws_lb" "app_lb" {
   subnets            = [aws_subnet.subnet_10_0.id, aws_subnet.subnet_20_0.id]
 
   enable_deletion_protection = false
+
+provisioner "local-exec" {
+    command = "python3 update_hetzner.py"
+    environment = {
+      HETZNER_DNS_KEY   = var.hetzner_dns_key
+      NEW_IP            = self.dns_name
+      HETZNER_RECORD_NAME = "webaws.pam4.com"
+      HETZNER_DOMAIN_NAME = "pam4.com"
+    }
+  }
+
 }
 
 
@@ -41,7 +52,7 @@ resource "aws_lb_target_group_attachment" "tg_attachment_10_7" {
 
 
 resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.app_lb.arn
+  load_balancer_arn = aws_lb.app_lb_webaws_pam4.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
