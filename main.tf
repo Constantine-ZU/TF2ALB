@@ -148,7 +148,7 @@ resource "aws_instance" "Instance_20_7" {
     inline = [
     "sudo apt-get update",
     "sudo snap install aws-cli --classic",  
-    "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx",  
+    "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",   
     "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx", 
     "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",  
     "sudo mkdir -p /var/www/BlazorForTF",
@@ -199,7 +199,7 @@ resource "aws_instance" "Instance_10_6" {
     inline = [
     "sudo apt-get update",
     "sudo snap install aws-cli --classic",  
-    "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx",  
+    "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",  
     "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx", 
     "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx", 
     "sudo mkdir -p /var/www/BlazorForTF",
