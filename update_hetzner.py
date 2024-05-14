@@ -6,10 +6,13 @@ new_ip_or_cname = os.getenv("NEW_IP")
 c_name = os.getenv("HETZNER_C_NAME")
 record_name = os.getenv("HETZNER_RECORD_NAME")
 domain_name = os.getenv("HETZNER_DOMAIN_NAME")
+if not c_name.endswith('.'): # hetznet requered .
+    c_name =c_name + '.'
 
 print(f"New IP or CNAME: {new_ip_or_cname}")
 print(f"Record Name: {record_name}")
 print(f"Domain Name: {domain_name}")
+print(f"Cname Name: {c_name}")
 print(f"API Key (first 5 chars): {api_token[:5]}...")
 
 headers = {
