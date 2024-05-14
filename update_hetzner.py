@@ -6,8 +6,7 @@ new_ip_or_cname = os.getenv("NEW_IP")
 c_name = os.getenv("HETZNER_C_NAME")
 record_name = os.getenv("HETZNER_RECORD_NAME")
 domain_name = os.getenv("HETZNER_DOMAIN_NAME")
-if not c_name.endswith('.'): # hetznet requered .
-    c_name =c_name + '.'
+
 
 print(f"New IP or CNAME: {new_ip_or_cname}")
 print(f"Record Name: {record_name}")
@@ -48,7 +47,8 @@ if zone_id:
     print(f"Zone ID: {zone_id}")
     # Определяем тип записи в зависимости от наличия переменной c_name
     record_type = "CNAME" if c_name else "A"
-    record_value = c_name if c_name else new_ip_or_cname
+    record_value = c_name + '.' if c_name else new_ip_or_cname
+   
     record_id = get_record_id(zone_id, record_name, record_type)
 
     if record_id:
