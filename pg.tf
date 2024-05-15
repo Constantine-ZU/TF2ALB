@@ -1,5 +1,5 @@
 resource "aws_db_instance" "pg_instance" {
-  identifier = "pg_db_for_webaws"
+  identifier = "pgdbwebaws"
   engine = "postgres"
   engine_version = "16.2"
   instance_class = "db.t3.micro"
