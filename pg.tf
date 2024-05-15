@@ -2,7 +2,7 @@ resource "aws_db_instance" "pg_instance" {
   identifier = "mypostgresdb"
   engine = "postgres"
   engine_version = "16.2"
-  instance_class = "db.t2.micro"
+  instance_class = "db.t3.micro"
   allocated_storage = 20
   username = "dbuser"
   password = var.db_password
