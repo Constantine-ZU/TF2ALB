@@ -6,6 +6,7 @@ resource "aws_db_instance" "pg_instance" {
   allocated_storage = 20
   username = "dbuser"
   password = var.db_password
+  db_name = "dbwebaws"
   db_subnet_group_name = aws_db_subnet_group.pg_subnet_group.name
   vpc_security_group_ids = [aws_security_group.pg_sg.id]
   skip_final_snapshot = true
@@ -57,7 +58,7 @@ resource "null_resource" "update_dns" {
     command = "python3 update_hetzner.py"
     environment = {
       HETZNER_DNS_KEY = var.hetzner_dns_key
-      NEW_IP = aws_db_instance.pg_instance.endpoint
+      HETZNER_C_NAME  = aws_db_instance.pg_instance.endpoint
       HETZNER_RECORD_NAME = "pgaws"
       HETZNER_DOMAIN_NAME = "pam4.com"
     }

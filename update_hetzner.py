@@ -7,6 +7,8 @@ c_name = os.getenv("HETZNER_C_NAME")
 record_name = os.getenv("HETZNER_RECORD_NAME")
 domain_name = os.getenv("HETZNER_DOMAIN_NAME")
 
+if c_name and ':' in c_name: #delete port for postgress
+    c_name = c_name.split(':')[0] + '.'
 
 print(f"New IP or CNAME: {new_ip_or_cname}")
 print(f"Record Name: {record_name}")

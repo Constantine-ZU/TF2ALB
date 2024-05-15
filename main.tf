@@ -32,7 +32,7 @@ resource "aws_vpc" "vpc_0_0" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "defaultVPC"
+    Name = "0_0_VPC"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_subnet" "subnet_10_0" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "defaultSubnet"
+    Name = "Subnet_10_0_24"
   }
 }
 
@@ -54,11 +54,11 @@ resource "aws_subnet" "subnet_20_0" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "additionalSubnet"
+    Name = "Subnet_10_0_24"
   }
 }
 
-resource "aws_internet_gateway" "default" {
+resource "aws_internet_gateway" "default_ig" {
   vpc_id = aws_vpc.vpc_0_0.id
 
   tags = {
@@ -66,12 +66,12 @@ resource "aws_internet_gateway" "default" {
   }
 }
 
-resource "aws_route_table" "default" {
+resource "aws_route_table" "default_rt" {
   vpc_id = aws_vpc.vpc_0_0.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.default.id
+    gateway_id = aws_internet_gateway.default_ig.id
   }
 
   tags = {
@@ -79,9 +79,9 @@ resource "aws_route_table" "default" {
   }
 }
 
-resource "aws_route_table_association" "default" {
+resource "aws_route_table_association" "default_subnet_10_0" {
   subnet_id      = aws_subnet.subnet_10_0.id
-  route_table_id = aws_route_table.default.id
+  route_table_id = aws_route_table.default_rt.id
 }
 
 
@@ -124,7 +124,7 @@ resource "aws_security_group" "sg_80_433" {
 
 resource "aws_route_table_association" "default_subnet_20_0" {
   subnet_id      = aws_subnet.subnet_20_0.id
-  route_table_id = aws_route_table.default.id
+  route_table_id = aws_route_table.default_rt.id
 }
 
 resource "aws_instance" "Instance_20_7" {
