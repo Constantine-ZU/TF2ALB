@@ -21,14 +21,18 @@ sudo apt-get install -y postgresql-client
 
 # Set environment variables
 export HOSTNAME=$(echo ${self.endpoint} | cut -d':' -f1)
-export PGPASSWORD=$(aws rds generate-db-auth-token --hostname $HOSTNAME --port 5432 --region eu-north-1 --username ${self.username})
+
+
+# Wait for the DB instance to be ready
+for i in {1..30}; do
+  pg_isready -h $HOSTNAME -p 5432 && break
+  echo "Waiting for the database to be ready..."
+  sleep 10
+done
 
 # Download and restore the backup
-aws s3 cp s3://constantine-z-2/dbwebaws_backup.dump /tmp/dbwebaws_backup.dump
-pg_restore -h $HOSTNAME -U ${self.username} -d ${self.db_name} -v /tmp/dbwebaws_backup.dump
-
-# Grant IAM role
-psql "host=$HOSTNAME dbname=${self.db_name} user=${self.username} password=$PGPASSWORD" -c "GRANT rds_iam TO dbuser;"
+aws s3 cp s3://constantine-z-2/dbwebaws_backup.dump ~/dbwebaws_backup.dump
+pg_restore -h $HOSTNAME -U dbuser -d dbwebaws -v ~/dbwebaws_backup.dump
 EOT
   }
 }
