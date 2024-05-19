@@ -22,7 +22,6 @@ sudo apt-get install -y postgresql-client
 # Set environment variables
 export HOSTNAME=$(echo ${self.endpoint} | cut -d':' -f1)
 
-
 # Wait for the DB instance to be ready
 for i in {1..30}; do
   pg_isready -h $HOSTNAME -p 5432 && break
@@ -30,9 +29,17 @@ for i in {1..30}; do
   sleep 10
 done
 
+# Check if the file exists in S3
+aws s3 ls s3://constantine-z-2/dbwebaws_backup.dump
+
 # Download and restore the backup
 aws s3 cp s3://constantine-z-2/dbwebaws_backup.dump ~/dbwebaws_backup.dump
-pg_restore -h $HOSTNAME -U dbuser -d dbwebaws -v ~/dbwebaws_backup.dump
+if [ -f ~/dbwebaws_backup.dump ]; then
+  pg_restore -h $HOSTNAME -U dbuser -d dbwebaws -v ~/dbwebaws_backup.dump
+else
+  echo "Backup file not found!"
+  exit 1
+fi
 EOT
   }
 }
