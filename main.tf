@@ -147,7 +147,7 @@ resource "aws_instance" "Instance_20_7" {
 provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get install -y postgresql-client", 
+      "sudo apt-get install -y postgresql-client",
       "sudo snap install aws-cli --classic",
       "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
       "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
@@ -160,8 +160,13 @@ provisioner "remote-exec" {
       "echo '[Unit]\nDescription=BlazorAut Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorAut\nExecStart=/var/www/BlazorAut/BlazorAut\nRestart=always\nRestartSec=10\nSyslogIdentifier=BlazorAut\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/BlazorAut.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable BlazorAut",
-      "sudo systemctl start BlazorAut"
- 
+      "sudo systemctl start BlazorAut",
+      "aws s3 cp s3://constantine-z-2/dbwebaws_backup.dump ~/dbwebaws_backup.dump",
+      "# Wait for the DB instance to be ready",
+      "for i in {1..30}; do pg_isready -h pgaws.pam4.com -p 5432 && break || echo 'Waiting for the database to be ready...' && sleep 10; done",
+      "export PGPASSWORD=${var.db_password}",
+      "pg_restore -h pgaws.pam4.com -U dbuser -d dbwebaws -v ~/dbwebaws_backup.dump"
+      
     ]
   }
 
