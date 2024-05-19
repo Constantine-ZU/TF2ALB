@@ -147,6 +147,7 @@ resource "aws_instance" "Instance_20_7" {
 provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
+      "sudo apt-get install -y postgresql-client", 
       "sudo snap install aws-cli --classic",
       "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
       "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
@@ -162,6 +163,7 @@ provisioner "remote-exec" {
       "sudo systemctl start blazorfortf",
       "export PGPASSWORD=$(aws rds generate-db-auth-token --hostname ${aws_db_instance.pg_instance.endpoint} --port 5432 --region eu-north-1 --username dbuser)",
       "psql \"host=${aws_db_instance.pg_instance.endpoint} port=5432 dbname=dbwebaws user=dbuser password=$PGPASSWORD\" -c \"GRANT rds_iam TO dbuser;\""
+
     ]
   }
 
