@@ -161,8 +161,9 @@ provisioner "remote-exec" {
       "sudo systemctl daemon-reload",
       "sudo systemctl enable blazorfortf",
       "sudo systemctl start blazorfortf",
-      "export PGPASSWORD=$(aws rds generate-db-auth-token --hostname ${aws_db_instance.pg_instance.endpoint} --region eu-north-1 --username dbuser)",
-      "psql \"host=${aws_db_instance.pg_instance.endpoint} dbname=dbwebaws user=dbuser password=$PGPASSWORD\" -c \"GRANT rds_iam TO dbuser;\""
+      "export HOSTNAME=$(echo ${aws_db_instance.pg_instance.endpoint} | cut -d':' -f1)",
+      "export PGPASSWORD=$(aws rds generate-db-auth-token --hostname $HOSTNAME --port 5432 --region eu-north-1 --username dbuser)",
+      "psql \"host=$HOSTNAME dbname=dbwebaws user=dbuser password=$PGPASSWORD\" -c \"GRANT rds_iam TO dbuser;\""
   
     ]
   }
