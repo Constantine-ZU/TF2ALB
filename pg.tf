@@ -13,9 +13,25 @@ resource "aws_db_instance" "pg_instance" {
   publicly_accessible     = true
   iam_database_authentication_enabled = true
 
-  
-}
+  provisioner "local-exec" {
+    command = <<EOT
+# Install PostgreSQL client
+sudo apt-get update
+sudo apt-get install -y postgresql-client
 
+# Set environment variables
+export HOSTNAME=$(echo ${self.endpoint} | cut -d':' -f1)
+export PGPASSWORD=$(aws rds generate-db-auth-token --hostname $HOSTNAME --port 5432 --region eu-north-1 --username ${self.username})
+
+# Download and restore the backup
+aws s3 cp s3://constantine-z-2/dbwebaws_backup.dump /tmp/dbwebaws_backup.dump
+pg_restore -h $HOSTNAME -U ${self.username} -d ${self.db_name} -v /tmp/dbwebaws_backup.dump
+
+# Grant IAM role
+psql "host=$HOSTNAME dbname=${self.db_name} user=${self.username} password=$PGPASSWORD" -c "GRANT rds_iam TO dbuser;"
+EOT
+  }
+}
 
 resource "aws_db_subnet_group" "pg_subnet_group" {
   name = "main"
@@ -67,5 +83,4 @@ resource "null_resource" "update_dns" {
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
-  
 }
