@@ -144,22 +144,24 @@ resource "aws_instance" "Instance_20_7" {
     host        = self.public_ip
   }
 
-  provisioner "remote-exec" {
+provisioner "remote-exec" {
     inline = [
-    "sudo apt-get update",
-    "sudo snap install aws-cli --classic",  
-    "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",   
-    "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx", 
-    "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",  
-    "sudo mkdir -p /var/www/BlazorForTF",
-    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
-    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
-    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
-    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
-    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
-    "sudo systemctl daemon-reload",
-    "sudo systemctl enable blazorfortf",
-    "sudo systemctl start blazorfortf"
+      "sudo apt-get update",
+      "sudo snap install aws-cli --classic",
+      "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
+      "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
+      "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",
+      "sudo mkdir -p /var/www/BlazorForTF",
+      "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
+      "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
+      "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
+      "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
+      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable blazorfortf",
+      "sudo systemctl start blazorfortf",
+      "export PGPASSWORD=$(aws rds generate-db-auth-token --hostname ${aws_db_instance.pg_instance.endpoint} --port 5432 --region eu-north-1 --username dbuser)",
+      "psql \"host=${aws_db_instance.pg_instance.endpoint} port=5432 dbname=dbwebaws user=dbuser password=$PGPASSWORD\" -c \"GRANT rds_iam TO dbuser;\""
     ]
   }
 

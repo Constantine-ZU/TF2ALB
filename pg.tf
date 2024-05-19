@@ -63,4 +63,5 @@ resource "null_resource" "update_dns" {
       HETZNER_DOMAIN_NAME = "pam4.com"
     }
   }
+  
 }
