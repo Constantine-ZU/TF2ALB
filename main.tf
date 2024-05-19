@@ -152,20 +152,16 @@ provisioner "remote-exec" {
       "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
       "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
       "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",
-      "sudo mkdir -p /var/www/BlazorForTF",
-      "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
-      "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
-      "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
-      "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
-      "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
+      "sudo mkdir -p /var/www/BlazorAut",
+      "curl -L -o BlazorAut.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorAut.tar",
+      "sudo tar -xf BlazorAut.tar -C /var/www/BlazorAut",
+      "sudo chmod +x /var/www/BlazorAut/BlazorAut",
+      "sudo chmod -R 755 /var/www/BlazorAut/wwwroot/",
+      "echo '[Unit]\nDescription=BlazorAut Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorAut\nExecStart=/var/www/BlazorAut/BlazorAut\nRestart=always\nRestartSec=10\nSyslogIdentifier=BlazorAut\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/BlazorAut.service",
       "sudo systemctl daemon-reload",
-      "sudo systemctl enable blazorfortf",
-      "sudo systemctl start blazorfortf",
-      "export RDSHOST=pgaws.pam4.com",
-      "export PGUSER=dbuser",
-      "export PGPASSWORD=$(aws rds generate-db-auth-token --hostname $RDSHOST --port 5432 --region eu-north-1 --username $PGUSER)",
-      "psql \"host=$RDSHOST port=5432 dbname=dbwebaws user=$PGUSER sslmode=require\" -c \"GRANT rds_iam TO dbuser;\""
-  
+      "sudo systemctl enable BlazorAut",
+      "sudo systemctl start BlazorAut"
+ 
     ]
   }
 
@@ -203,20 +199,21 @@ resource "aws_instance" "Instance_10_6" {
 
   provisioner "remote-exec" {
     inline = [
-    "sudo apt-get update",
-    "sudo snap install aws-cli --classic",  
-    "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",  
-    "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx", 
-    "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx", 
-    "sudo mkdir -p /var/www/BlazorForTF",
-    "curl -L -o BlazorForTF.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorForTF.tar",
-    "sudo tar -xf BlazorForTF.tar -C /var/www/BlazorForTF",
-    "sudo chmod +x /var/www/BlazorForTF/BlazorForTF",
-    "sudo chmod -R 755 /var/www/BlazorForTF/wwwroot/",
-    "echo '[Unit]\nDescription=BlazorForTF Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorForTF\nExecStart=/var/www/BlazorForTF/BlazorForTF\nRestart=always\nRestartSec=10\nSyslogIdentifier=blazorfortf\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/blazorfortf.service",
-    "sudo systemctl daemon-reload",
-    "sudo systemctl enable blazorfortf",
-    "sudo systemctl start blazorfortf"
+      "sudo apt-get update",
+      "sudo apt-get install -y postgresql-client", 
+      "sudo snap install aws-cli --classic",
+      "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
+      "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
+      "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",
+      "sudo mkdir -p /var/www/BlazorAut",
+      "curl -L -o BlazorAut.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorAut.tar",
+      "sudo tar -xf BlazorAut.tar -C /var/www/BlazorAut",
+      "sudo chmod +x /var/www/BlazorAut/BlazorAut",
+      "sudo chmod -R 755 /var/www/BlazorAut/wwwroot/",
+      "echo '[Unit]\nDescription=BlazorAut Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorAut\nExecStart=/var/www/BlazorAut/BlazorAut\nRestart=always\nRestartSec=10\nSyslogIdentifier=BlazorAut\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/BlazorAut.service",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable BlazorAut",
+      "sudo systemctl start BlazorAut"
     ]
   }
    provisioner "local-exec" {
