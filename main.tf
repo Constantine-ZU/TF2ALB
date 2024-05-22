@@ -145,24 +145,15 @@ resource "aws_instance" "Instance_20_7" {
   }
 
 provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y postgresql-client",
-      "sudo snap install aws-cli --classic",
-      "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
-      "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
-      "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",
-      "sudo mkdir -p /var/www/BlazorAut",
-      "curl -L -o BlazorAut.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorAut.tar",
-      "sudo tar -xf BlazorAut.tar -C /var/www/BlazorAut",
-      "sudo chmod +x /var/www/BlazorAut/BlazorAut",
-      "sudo chmod -R 755 /var/www/BlazorAut/wwwroot/",
-      "echo '[Unit]\nDescription=BlazorAut Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorAut\nExecStart=/var/www/BlazorAut/BlazorAut\nRestart=always\nRestartSec=10\nSyslogIdentifier=BlazorAut\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/BlazorAut.service",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl enable BlazorAut",
-      "sudo systemctl start BlazorAut"      
-    ]
-  }
+  inline = [
+    "export S3_PATH='s3://constantine-z-2/'",
+    "export PFX_FILE_NAME='your_cert.pfx'",
+    "export APP_NAME='BlazorAut'",
+    "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
+    "/usr/local/bin/setup_instance.sh"
+  ]
+}
+
 
  provisioner "local-exec" {
     command = "python3 update_hetzner.py"
