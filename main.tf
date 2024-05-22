@@ -152,6 +152,10 @@ resource "aws_instance" "Instance_20_7" {
     source      = "restore_pg_dump.sh"
     destination = "/tmp/restore_pg_dump.sh"
   }
+  provisioner "file" {
+  content     = var.db_password
+  destination = "/tmp/db_password"
+}
   
   provisioner "remote-exec" {
     inline = [
@@ -163,7 +167,8 @@ resource "aws_instance" "Instance_20_7" {
       "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
       "export DB_HOST='pgaws.pam4.com'",
       "export DB_USER='dbuser'",
-      "export DB_PASS='${var.db_password}'",
+      "DB_PASS=$(cat /tmp/db_password)",
+      "export DB_PASS",
       "export DB_NAME='dbwebaws'",
       "sudo /usr/local/bin/setup_instance.sh",
       "sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh",
@@ -209,6 +214,10 @@ resource "aws_instance" "Instance_10_6" {
     source      = "setup_instance.sh"
     destination = "/tmp/setup_instance.sh"
   }
+    provisioner "file" {
+    content     = var.db_password
+    destination = "/tmp/db_password"
+  }
 
   provisioner "remote-exec" {
     inline = [
@@ -220,7 +229,8 @@ resource "aws_instance" "Instance_10_6" {
       "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
       "export DB_HOST='pgaws.pam4.com'",
       "export DB_USER='dbuser'",
-      "export DB_PASS='${var.db_password}'",
+      "DB_PASS=$(cat /tmp/db_password)",
+      "export DB_PASS",
       "export DB_NAME='dbwebaws'",
       "sudo /usr/local/bin/setup_instance.sh"
     ]

@@ -34,7 +34,7 @@ sudo chmod +x /var/www/${APP_NAME}/${APP_NAME}
 sudo chmod -R 755 /var/www/${APP_NAME}/wwwroot/
 
 #edit appsettings.json
-
+echo "JQ arguments Length of DB_PASS: ${#DB_PASS}, First three characters: ${DB_PASS:0:3}"
 APPSETTINGS_PATH="/var/www/${APP_NAME}/appsettings.json"
 
 jq --arg db_host "$DB_HOST" \

@@ -18,7 +18,7 @@ aws s3 cp ${DUMP_FILE_PATH} ~/dbwebaws_backup.dump
 echo "Waiting for the PostgreSQL database to become ready..."
 max_attempts=50
 attempt_no=0
-echo "Length of DB_PASS: ${#DB_PASS}, First three characters: ${DB_PASS:0:3}"
+echo "Pg_Dump arguments Length of DB_PASS: ${#DB_PASS}, First three characters: ${DB_PASS:0:3}"
 PGPASSWORD=$DB_PASS
 until  psql -h $DB_HOST -U $DB_USER -l; do
   ((attempt_no++))
