@@ -144,20 +144,22 @@ resource "aws_instance" "Instance_20_7" {
     host        = self.public_ip
   }
 
- provisioner "file" {
-  source      = "setup_instance.sh"
-  destination = "/usr/local/bin/setup_instance.sh"
-}
+  provisioner "file" {
+    source      = "setup_instance.sh"
+    destination = "/tmp/setup_instance.sh"
+  }
 
- provisioner "remote-exec" {
-  inline = [
-    "export S3_PATH='s3://constantine-z-2/'",
-    "export PFX_FILE_NAME='your_cert.pfx'",
-    "export APP_NAME='BlazorAut'",
-    "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
-    "/usr/local/bin/setup_instance.sh"
-  ]
-}
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mv /tmp/setup_instance.sh /usr/local/bin/setup_instance.sh",
+      "sudo chmod +x /usr/local/bin/setup_instance.sh",
+      "export S3_PATH='s3://constantine-z-2/'",
+      "export PFX_FILE_NAME='your_cert.pfx'",
+      "export APP_NAME='BlazorAut'",
+      "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
+      "sudo /usr/local/bin/setup_instance.sh"
+    ]
+  }
 
 
  provisioner "local-exec" {
