@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Переменные среды
+
 DB_HOST=${DB_HOST:-"pgaws.pam4.com"}
 DB_USER=${DB_USER:-"dbuser"}
 DB_PASS=${DB_PASS:-"password"}
