@@ -44,6 +44,7 @@ jq --arg db_host "$DB_HOST" \
    $APPSETTINGS_PATH > $APPSETTINGS_PATH.tmp && mv $APPSETTINGS_PATH.tmp $APPSETTINGS_PATH
 
 
+
 echo "[Unit]
 Description=${APP_NAME} Web App
 
@@ -53,3 +54,13 @@ ExecStart=/var/www/${APP_NAME}/${APP_NAME}
 Restart=always
 RestartSec=10
 SyslogIdentifier=${APP_NAME}
+
+[Install]
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/${APP_NAME}.service
+
+
+sudo systemctl daemon-reload
+sudo systemctl enable ${APP_NAME}
+sudo systemctl start ${APP_NAME}
+
+
