@@ -148,16 +148,27 @@ resource "aws_instance" "Instance_20_7" {
     source      = "setup_instance.sh"
     destination = "/tmp/setup_instance.sh"
   }
-
+  provisioner "file" {
+    source      = "restore_pg_dump.sh"
+    destination = "/tmp/restore_pg_dump.sh"
+  }
+  
   provisioner "remote-exec" {
     inline = [
       "sudo mv /tmp/setup_instance.sh /usr/local/bin/setup_instance.sh",
       "sudo chmod +x /usr/local/bin/setup_instance.sh",
       "export S3_PATH='s3://constantine-z-2/'",
-      "export PFX_FILE_NAME='your_cert.pfx'",
+      "export PFX_FILE_NAME='webaws_pam4_com_2024_05_13.pfx'",
       "export APP_NAME='BlazorAut'",
       "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
-      "sudo /usr/local/bin/setup_instance.sh"
+      "export DB_HOST='pgaws.pam4.com'",
+      "export DB_USER='dbuser'",
+      "export DB_PASS='${var.db_password}'",
+      "export DB_NAME='dbwebaws'",
+      "sudo /usr/local/bin/setup_instance.sh",
+      "sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh",
+      "sudo chmod +x /usr/local/bin/restore_pg_dump.sh",
+      "sudo /usr/local/bin/restore_pg_dump.sh"
     ]
   }
 
@@ -194,25 +205,28 @@ resource "aws_instance" "Instance_10_6" {
     host        = self.public_ip
   }
 
+  provisioner "file" {
+    source      = "setup_instance.sh"
+    destination = "/tmp/setup_instance.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
-      "sudo apt-get update",
-      "sudo apt-get install -y postgresql-client", 
-      "sudo snap install aws-cli --classic",
-      "aws s3 cp s3://constantine-z-2/webaws_pam4_com_2024_05_13.pfx ./webaws_pam4_com_2024_05_13.pfx",
-      "sudo mv ./webaws_pam4_com_2024_05_13.pfx /etc/ssl/certs/webaws_pam4_com.pfx",
-      "sudo chmod 600 /etc/ssl/certs/webaws_pam4_com.pfx",
-      "sudo mkdir -p /var/www/BlazorAut",
-      "curl -L -o BlazorAut.tar https://constantine-z.s3.eu-north-1.amazonaws.com/BlazorAut.tar",
-      "sudo tar -xf BlazorAut.tar -C /var/www/BlazorAut",
-      "sudo chmod +x /var/www/BlazorAut/BlazorAut",
-      "sudo chmod -R 755 /var/www/BlazorAut/wwwroot/",
-      "echo '[Unit]\nDescription=BlazorAut Web App\n\n[Service]\nWorkingDirectory=/var/www/BlazorAut\nExecStart=/var/www/BlazorAut/BlazorAut\nRestart=always\nRestartSec=10\nSyslogIdentifier=BlazorAut\n\n[Install]\nWantedBy=multi-user.target' | sudo tee /etc/systemd/system/BlazorAut.service",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl enable BlazorAut",
-      "sudo systemctl start BlazorAut"
+      "sudo mv /tmp/setup_instance.sh /usr/local/bin/setup_instance.sh",
+      "sudo chmod +x /usr/local/bin/setup_instance.sh",
+      "export S3_PATH='s3://constantine-z-2/'",
+      "export PFX_FILE_NAME='webaws_pam4_com_2024_05_13.pfx'",
+      "export APP_NAME='BlazorAut'",
+      "export S3_BASE_URL='https://constantine-z.s3.eu-north-1.amazonaws.com'",
+      "export DB_HOST='pgaws.pam4.com'",
+      "export DB_USER='dbuser'",
+      "export DB_PASS='${var.db_password}'",
+      "export DB_NAME='dbwebaws'",
+      "sudo /usr/local/bin/setup_instance.sh"
     ]
   }
+
+
    provisioner "local-exec" {
     command = "python3 update_hetzner.py"
     environment = {
