@@ -144,6 +144,11 @@ resource "aws_instance" "Instance_20_7" {
     host        = self.public_ip
   }
 
+provisioner "file" {
+  source      = "setup_instance.sh"
+  destination = "/usr/local/bin/setup_instance.sh"
+}
+
 provisioner "remote-exec" {
   inline = [
     "export S3_PATH='s3://constantine-z-2/'",
