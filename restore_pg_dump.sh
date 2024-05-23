@@ -19,7 +19,7 @@ echo "Waiting for the PostgreSQL database to become ready..."
 max_attempts=50
 attempt_no=0
 echo "Pg_Dump arguments Length of DB_PASS: ${#DB_PASS}, First three characters: ${DB_PASS:0:3}"
-PGPASSWORD=$DB_PASS
+#PGPASSWORD=$DB_PASS
 until PGPASSWORD=$DB_PASS psql -h $DB_HOST -U $DB_USER -l -w; do
   ((attempt_no++))
   echo "Database is not ready yet. Attempt $attempt_no of $max_attempts. Retrying..."
