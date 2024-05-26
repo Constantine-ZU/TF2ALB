@@ -169,11 +169,11 @@ resource "aws_instance" "Instance_20_7" {
       "export DB_USER='dbuser'",
       "DB_PASS=$(cat /tmp/db_password)",
       "export DB_PASS",
-      "export DB_NAME='dbwebaws'",
-      "sudo -E /usr/local/bin/setup_instance.sh",
-      "sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh",
-      "sudo chmod +x /usr/local/bin/restore_pg_dump.sh",
-      "sudo -E /usr/local/bin/restore_pg_dump.sh"
+      "export DB_NAME='dbwebaws'"
+      #,"sudo -E /usr/local/bin/setup_instance.sh",
+      ,"sudo mv /tmp/restore_pg_dump.sh /usr/local/bin/restore_pg_dump.sh"
+      ,"sudo chmod +x /usr/local/bin/restore_pg_dump.sh"
+      #,"sudo -E /usr/local/bin/restore_pg_dump.sh"
     ]
   }
 
@@ -231,8 +231,8 @@ resource "aws_instance" "Instance_10_6" {
       "export DB_USER='dbuser'",
       "DB_PASS=$(cat /tmp/db_password)",
       "export DB_PASS",
-      "export DB_NAME='dbwebaws'",
-      "sudo -E /usr/local/bin/setup_instance.sh"
+      "export DB_NAME='dbwebaws'"
+      # ,"sudo -E /usr/local/bin/setup_instance.sh"
     ]
   }
 

@@ -4,7 +4,7 @@
 
 S3_PATH=${S3_PATH:-"s3://constantine-z-2/"}
 PFX_FILE_NAME=${PFX_FILE_NAME:-"webaws_pam4_com_2024_05_13.pfx"}
-APP_NAME=${APP_NAME:-"appppppppp"}
+APP_NAME=${APP_NAME:-"00000000"}
 S3_BASE_URL="https://constantine-z.s3.eu-north-1.amazonaws.com"
 DB_HOST=${DB_HOST:-"host-db"}
 DB_USER=${DB_USER:-"user-db"}
@@ -21,13 +21,15 @@ sudo apt-get install -y postgresql-client
 sudo snap install aws-cli --classic
 sudo apt-get install -y jq #edit app settings
 
-
+echo "s3 command: s3 cp ${S3_PATH}${PFX_FILE_NAME} ./${PFX_FILE_NAME}"
 aws s3 cp ${S3_PATH}${PFX_FILE_NAME} ./${PFX_FILE_NAME}
+echo "mv command: mv ./${PFX_FILE_NAME} /etc/ssl/certs/${APP_NAME}.pfx"
 sudo mv ./${PFX_FILE_NAME} /etc/ssl/certs/${APP_NAME}.pfx
 sudo chmod 600 /etc/ssl/certs/${APP_NAME}.pfx
 
 
 sudo mkdir -p /var/www/${APP_NAME}
+echo "curl command: curl -L -o ${APP_NAME}.tar ${S3_BASE_URL}/${APP_NAME}.tar"
 curl -L -o ${APP_NAME}.tar ${S3_BASE_URL}/${APP_NAME}.tar
 sudo tar -xf ${APP_NAME}.tar -C /var/www/${APP_NAME}
 sudo chmod +x /var/www/${APP_NAME}/${APP_NAME}
