@@ -13,6 +13,9 @@ echo "!-apt-get update"
 sudo apt-get update
 sudo apt-get install -y postgresql-client
 
+echo "!- Setup AWS-cli"
+sudo snap install aws-cli --classic
+
 echo "!-Downloading database dump from S3..."
 aws s3 cp ${DUMP_FILE_PATH} ~/dbwebaws_backup.dump
 
@@ -34,6 +37,7 @@ done
 
 
 echo "!-Restoring database from dump..."
-PGPASSWORD=$DB_PASS pg_restore -h $DB_HOST -U $DB_USER -d $DB_NAME -v ~/dbwebaws_backup.dump
+PGPASSWORD=$DB_PASS pg_restore -h $DB_HOST -U $DB_USER -d $DB_NAME -v ~/dbwebaws_backup.dump || echo "Failed to restore database"
+
 
 echo "1-Database restoration complete."

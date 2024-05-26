@@ -14,7 +14,7 @@ print(f"New IP or CNAME: {new_ip_or_cname}")
 print(f"Record Name: {record_name}")
 print(f"Domain Name: {domain_name}")
 print(f"Cname Name: {c_name}")
-print(f"API Key (first 5 chars): {api_token[:5]}...")
+print(f"API Key (first 3 chars): {api_token[:3]}...")
 
 headers = {
     "Content-Type": "application/json",
@@ -32,7 +32,7 @@ def get_zone_id(domain_name):
                 return zone['id']
     return None
 
-# Получение Record ID
+
 def get_record_id(zone_id, record_name, record_type):
     url = f"https://dns.hetzner.com/api/v1/records?zone_id={zone_id}"
     response = requests.get(url, headers=headers)
@@ -43,11 +43,11 @@ def get_record_id(zone_id, record_name, record_type):
                 return record['id']
     return None
 
-# Основной процесс обновления
+
 zone_id = get_zone_id(domain_name)
 if zone_id:
     print(f"Zone ID: {zone_id}")
-    # Определяем тип записи в зависимости от наличия переменной c_name
+    
     record_type = "CNAME" if c_name else "A"
     record_value = c_name + '.' if c_name else new_ip_or_cname
    
@@ -55,7 +55,7 @@ if zone_id:
 
     if record_id:
         print(f"Record ID: {record_id}")
-        # Обновление записи
+       
         url = f"https://dns.hetzner.com/api/v1/records/{record_id}"
         data = {
             "value": record_value,
