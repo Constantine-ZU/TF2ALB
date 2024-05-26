@@ -49,7 +49,7 @@ if zone_id:
     print(f"Zone ID: {zone_id}")
     
     record_type = "CNAME" if c_name else "A"
-    record_value = c_name + '.' if c_name else new_ip_or_cname
+    record_value = c_name if c_name else new_ip_or_cname
    
     record_id = get_record_id(zone_id, record_name, record_type)
 
