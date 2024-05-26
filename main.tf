@@ -191,6 +191,7 @@ resource "aws_instance" "Instance_20_7" {
  tags = {
     Name = "Ubuntu-ALB-10-7"
   }
+depends_on = [aws_db_instance.pg_instance]
 }
 
 resource "aws_instance" "Instance_10_6" {
@@ -250,4 +251,6 @@ resource "aws_instance" "Instance_10_6" {
   tags = {
     Name = "Ubuntu-ALB-10-6"
   }
+  depends_on = [aws_instance.pg_instance.Instance_20_7]
+
 }
