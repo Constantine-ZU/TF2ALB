@@ -57,6 +57,8 @@ if zone_id:
         print(f"Record ID: {record_id}")
        
         url = f"https://dns.hetzner.com/api/v1/records/{record_id}"
+        print(f"url: https://dns.hetzner.com/api/v1/records/{record_id}")
+
         data = {
             "value": record_value,
             "ttl": 60,
@@ -64,6 +66,7 @@ if zone_id:
             "name": record_name,
             "zone_id": zone_id
         }
+        print(f"Data for HTTP put: {data}")
         response = requests.put(url, headers=headers, json=data)
         if response.status_code == 200:
             print(f"Successfully updated {record_type} record {record_name} to {record_value}")
