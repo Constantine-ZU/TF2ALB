@@ -9,6 +9,9 @@ S3_BUCKET=${S3_BUCKET:-"s3://constantine-z-2/"}
 
 DUMP_FILE_PATH="${S3_BUCKET}${DB_NAME}_backup.dump"
 
+echo "!-apt-get update"
+sudo apt-get update
+sudo apt-get install -y postgresql-client
 
 echo "!-Downloading database dump from S3..."
 aws s3 cp ${DUMP_FILE_PATH} ~/dbwebaws_backup.dump
