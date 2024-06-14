@@ -2,7 +2,7 @@
 
 S3_PATH=${S3_PATH:-"s3://constantine-z-2/"}
 PFX_FILE_NAME=${PFX_FILE_NAME:-"webaws_pam4_com_2024_05_13.pfx"}
-APP_NAME=${APP_NAME:-"00000000"}
+APP_NAME=${APP_NAME:-"BlazorAut"}
 S3_BASE_URL="https://constantine-z.s3.eu-north-1.amazonaws.com"
 DB_HOST=${DB_HOST:-"host-db"}
 DB_USER=${DB_USER:-"user-db"}
