@@ -1,23 +1,3 @@
-provider "aws" {
-  region = "eu-north-1"
-}
-
-data "aws_vpc" "selected" {
-  id = aws_vpc.vpc_0_0.id
-}
-
-data "aws_subnet" "subnet1" {
-  id = aws_subnet.subnet_10_0.id
-}
-
-data "aws_subnet" "subnet2" {
-  id = aws_subnet.subnet_20_0.id
-}
-
-data "aws_security_group" "sg" {
-  id = aws_security_group.sg_80_433.id
-}
-
 resource "aws_ecs_cluster" "cluster" {
   name = "cluster-pgw"
 }
@@ -64,8 +44,8 @@ resource "aws_ecs_service" "service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [data.aws_subnet.subnet1.id, data.aws_subnet.subnet2.id]
-    security_groups  = [data.aws_security_group.sg.id]
+    subnets          = [aws_subnet.subnet_10_0.id, aws_subnet.subnet_20_0.id]
+    security_groups  = [aws_security_group.sg_80_433.id]
     assign_public_ip = true
   }
 }
